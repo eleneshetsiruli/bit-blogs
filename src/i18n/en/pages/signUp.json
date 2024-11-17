@@ -1,0 +1,11 @@
+{
+  "title": "Sign Up for BitBlogs",
+  "text": "Create your account to start blogging",
+  "name": "Name",
+  "Email": "Email",
+  "Password": "Password",
+  "confirm": "Confirm Password",
+  "signUp": "Sign Up",
+  "alrady": "Alrady have an account?",
+  "logIn": "Log In"
+}
