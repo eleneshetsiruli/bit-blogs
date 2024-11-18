@@ -31,12 +31,12 @@ export const cardsStaticData: Card[] = [
 ];
 
 export const techButtons = [
-  "Blockchain",
-  "Cryptocurrency",
-  "Technology",
-  "Programming",
-  "AI",
-  "Machine Learning",
+  { en: "Blockchain", ka: "ბლოკჩეინი" },
+  { en: "Cryptocurrency", ka: "კრიპტოვალუტა" },
+  { en: "Technology", ka: "ტექნოლოგიები" },
+  { en: "Programming", ka: "პროგრამირება" },
+  { en: "AI", ka: "ხელოვნური-ინ" },
+  { en: "Machine Learning", ka: "ტექ-ენები" },
 ];
 
 export const Authors = [
