@@ -11,13 +11,18 @@ import { Input } from "@/components/ui/input";
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { register } from "@/supabase/auth";
 
 export const SignUp = () => {
-  const [email, setEmail] = useState("");
+  const [registerPayload, setRegisterPayload] = useState({
+    email: "",
+    password: "",
+  });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
   const { t } = useTranslation();
+
   const [errors, setErrors] = useState({
     email: "",
     password: "",
@@ -25,11 +30,21 @@ export const SignUp = () => {
     confirmPassword: "",
   });
 
+  const { mutate: handleRegister } = useMutation({
+    mutationKey: ["register"],
+    mutationFn: register,
+  });
+
   const navigate = useNavigate();
   const { lang } = useParams();
 
   function handleSubmit(ev: FormEvent<HTMLFormElement>) {
     ev.preventDefault();
+
+    if (!!registerPayload.email && !!registerPayload.password) {
+      handleRegister(registerPayload);
+    }
+
     let formIsValid = true;
     const newErrors = {
       email: "",
@@ -38,17 +53,17 @@ export const SignUp = () => {
       confirmPassword: "",
     };
 
-    if (!email) {
+    if (!registerPayload.email) {
       newErrors.email = "Email is required";
       formIsValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!/\S+@\S+\.\S+/.test(registerPayload.email)) {
       newErrors.email = "Email is invalid";
       formIsValid = false;
     }
-    if (!password) {
+    if (!registerPayload.password) {
       newErrors.password = "Password is required";
       formIsValid = false;
-    } else if (password.length < 6) {
+    } else if (registerPayload.password.length < 6) {
       newErrors.password = "password must be at least 6 characters";
       formIsValid = false;
     }
@@ -64,13 +79,13 @@ export const SignUp = () => {
     if (!confirmPassword) {
       newErrors.confirmPassword = "Confirm Password is required";
       formIsValid = false;
-    } else if (confirmPassword !== password) {
+    } else if (confirmPassword !== registerPayload.password) {
       newErrors.confirmPassword = "Passwords do not match";
       formIsValid = false;
     }
 
     if (formIsValid) {
-      navigate("/sign-in");
+      navigate(`/${lang}/sign-in`);
     }
 
     setErrors(newErrors);
@@ -103,8 +118,13 @@ export const SignUp = () => {
           <p>{t("sign-up.Email")}</p>
           <Input
             type="email"
-            value={email}
-            onChange={(ev) => setEmail(ev.target.value)}
+            value={registerPayload.email}
+            onChange={(ev) =>
+              setRegisterPayload((prev) => ({
+                ...prev,
+                email: ev.target.value,
+              }))
+            }
             placeholder="john@example.com"
             className="border-chart-1"
           />
@@ -114,8 +134,14 @@ export const SignUp = () => {
         <CardContent className="flex flex-col gap-2">
           <p>{t("sign-up.Password")}</p>
           <Input
+            value={registerPayload.password}
             type="password"
-            onChange={(ev) => setPassword(ev.target.value)}
+            onChange={(ev) =>
+              setRegisterPayload((prev) => ({
+                ...prev,
+                password: ev.target.value,
+              }))
+            }
             className="border-chart-1"
           />
           <p className="text-red-500">{errors.password}</p>

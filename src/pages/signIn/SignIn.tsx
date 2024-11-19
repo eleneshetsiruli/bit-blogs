@@ -11,31 +11,47 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useMutation } from "@tanstack/react-query";
+import { logIn } from "@/supabase/auth";
 
 export const SignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [signInPayload, setSignInPayload] = useState({
+    email: "",
+    password: "",
+  });
+  console.log(signInPayload);
+
   const [errors, setErrors] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const { lang } = useParams();
   const { t } = useTranslation();
 
+  const { mutate: handleSignIn } = useMutation({
+    mutationKey: ["logIn"],
+    mutationFn: logIn,
+  });
+
   function handleSubmit(ev: FormEvent<HTMLFormElement>) {
     ev.preventDefault();
+
+    if (!!signInPayload.email && !!signInPayload.password) {
+      handleSignIn(signInPayload);
+    }
+
     let formIsValid = true;
     const newErrors = { email: "", password: "" };
 
-    if (!email) {
+    if (!signInPayload.email) {
       newErrors.email = "Email is required";
       formIsValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!/\S+@\S+\.\S+/.test(signInPayload.email)) {
       newErrors.email = "Email is invalid";
       formIsValid = false;
     }
-    if (!password) {
+    if (!signInPayload.password) {
       newErrors.password = "Password is required";
       formIsValid = false;
-    } else if (password.length < 6) {
+    } else if (signInPayload.password.length < 6) {
       newErrors.password = "password must be at least 6 characters";
       formIsValid = false;
     }
@@ -59,17 +75,26 @@ export const SignIn = () => {
         <CardContent className="flex flex-col gap-2">
           <p>{t("login-page.email")}</p>
           <Input
-            value={email}
-            onChange={(ev) => setEmail(ev.target.value)}
+            value={signInPayload.email}
+            onChange={(ev) =>
+              setSignInPayload((prev) => ({ ...prev, email: ev.target.value }))
+            }
             placeholder="john@example.com"
             className="border-chart-1"
           />
           <p className="text-red-600">{errors.email}</p>
         </CardContent>
+
         <CardContent className="flex flex-col gap-2">
           <p>{t("login-page.password")}</p>
           <Input
-            onChange={(ev) => setPassword(ev.target.value)}
+            value={signInPayload.password}
+            onChange={(ev) =>
+              setSignInPayload((prev) => ({
+                ...prev,
+                password: ev.target.value,
+              }))
+            }
             className="border-chart-1"
           />
           <p className="text-red-500">{errors.password}</p>
