@@ -6,6 +6,7 @@ export default {
     extend: {
       boxShadow: {
         custom: "box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;",
+        card: "box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -13,6 +14,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        customBg: "hsl(220, 13%, 91%)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

@@ -44,3 +44,28 @@ export const Authors = [
   { id: 2, name: "Bob Smith", work: "Crypto Analyst" },
   { id: 3, name: "Carol Williams", work: "Tech Journalist" },
 ];
+
+export const authorsData = [
+  {
+    name: "Jane Doe",
+    info: "Tech enthusiast, software engineer, and avid blogger. Passionate about AI, web development, and the future of technology.",
+    followers: "1234 Followers",
+    following: "567 Following",
+  },
+];
+
+export const authorAbout = [
+  {
+    title: "About Jane Doe",
+    text: "Jane Doe is a seasoned software engineer with over a decade of experience in web development. She specializes in JavaScript, React, and Node.js, and has a keen interest in emerging technologies like AI and blockchain. Jane is a frequent speaker at tech conferences and contributes to various open-source projects.",
+    skills: [
+      "javaScript",
+      "React",
+      "Node.js",
+      "Python",
+      "AI",
+      "Blockchain",
+      "Web-Development",
+    ],
+  },
+];
