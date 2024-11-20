@@ -19,7 +19,6 @@ export const SignIn = () => {
     email: "",
     password: "",
   });
-  console.log(signInPayload);
 
   const [errors, setErrors] = useState({ email: "", password: "" });
   const navigate = useNavigate();
