@@ -6,12 +6,6 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  build: {
-    outDir: "dist", // Define the output directory
-    rollupOptions: {
-      input: path.resolve(__dirname, "index.html"), // Entry point for the build (adjust as necessary)
-    },
-  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
