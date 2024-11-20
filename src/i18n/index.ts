@@ -4,7 +4,7 @@ import { initReactI18next } from "react-i18next";
 import homePageKa from "../i18n/ka/pages/home.json";
 import homePageEn from "../i18n/en/pages/home.json";
 
-import loginPageKa from "../i18n/ka/pages/login.json";
+import loginPageKa from "../i18n/ka/pages/logIn.json";
 import loginPageEn from "../i18n/en/pages/login.json";
 
 import signUpPageKa from "../i18n/ka/pages/signUp.json";
