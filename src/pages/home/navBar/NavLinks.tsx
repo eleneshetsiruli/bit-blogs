@@ -20,7 +20,7 @@ export const NavLinks = () => {
       </NavLink>
       {user && (
         <NavLink className={"hover:text-ring"} to={`/${lang}/profile`}>
-          Profile
+          {t("home-page.profile")}
         </NavLink>
       )}
     </div>

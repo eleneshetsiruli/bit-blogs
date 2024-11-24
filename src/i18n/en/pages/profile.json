@@ -1,0 +1,15 @@
+{
+  "name": "name",
+  "lastName": "Last Name",
+  "Telephone": "Telephone",
+  "profileInfo": "Profile info",
+  "edit": "edit your profile",
+  "username": "Username",
+  "fullNameEn": "Full Name English",
+  "fullNameKa": "Full Name Georgian",
+  "lastNameEn": "Last Name English",
+  "lastNameKa": "Last Name Georgian",
+  "avatar": "avatar",
+  "save": "save",
+  "selectAvatar": "selectAvatar"
+}

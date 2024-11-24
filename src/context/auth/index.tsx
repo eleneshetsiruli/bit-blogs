@@ -1,16 +1,27 @@
-import { createContext, PropsWithChildren, useState } from "react";
+import { createContext } from "react";
 
-export const AuthContext = createContext({ user: "User X" });
+interface AuthContextType {
+  user: string | undefined;
+  handleSetUser: (user: string) => void;
+}
 
-export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [user, setUser] = useState();
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
-  const handleSetUser = (user) => {
-    setUser(user);
-  };
-  return (
-    <AuthContext.Provider value={{ user, handleSetUser }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+// interface AuthProviderProps {
+//   children: ReactNode;
+// }
+
+// export const AuthProvider = ({ children }: AuthProviderProps) => {
+//   const [user, setUser] = useState<string | undefined>(undefined);
+
+//   const handleSetUser = (user: string) => {
+//     setUser(user);
+//   };
+//   return (
+//     <AuthContext.Provider value={{ user, handleSetUser }}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };

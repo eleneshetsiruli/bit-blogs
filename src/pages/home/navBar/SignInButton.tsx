@@ -6,6 +6,8 @@ import { useMutation } from "@tanstack/react-query";
 import { logOut } from "@/supabase/auth";
 import { Avatar } from "@radix-ui/react-avatar";
 import { AvatarImage } from "@/components/ui/avatar";
+import { supabase } from "@/supabase";
+import { useEffect, useState } from "react";
 
 export const PrimaryButton: React.FC<primaryButtonProps> = ({
   title,
@@ -15,6 +17,7 @@ export const PrimaryButton: React.FC<primaryButtonProps> = ({
   function handleGoToSignIn() {
     navigate("sign-in");
   }
+  const [profileAvatar, setProfileAvatar] = useState("");
 
   const { user } = useAuthContext();
 
@@ -23,6 +26,22 @@ export const PrimaryButton: React.FC<primaryButtonProps> = ({
     mutationFn: logOut,
   });
 
+  const { mutate: handleFetchAvatar } = useMutation({
+    mutationKey: ["getAvatar"],
+    mutationFn: (id: string | number) => getAvatar(id),
+
+    onSuccess: (data) => {
+      const avatarUrl = data?.data?.[0]?.avatar_url ?? "";
+      setProfileAvatar(avatarUrl);
+    },
+  });
+
+  useEffect(() => {
+    if (user?.user?.id) {
+      handleFetchAvatar(user.user.id);
+    }
+  }, [user?.user?.id]);
+
   return (
     <>
       {user ? (
@@ -30,7 +49,7 @@ export const PrimaryButton: React.FC<primaryButtonProps> = ({
           <AvatarImage
             onClick={() => navigate("profile-info")}
             className="w-[40px] cursor-pointer rounded-[50px] border-2 border-chart-1"
-            src="https://api.dicebear.com/9.x/adventurer/svg?seed=Liliana"
+            src={profileAvatar}
           />
         </Avatar>
       ) : (
@@ -42,4 +61,8 @@ export const PrimaryButton: React.FC<primaryButtonProps> = ({
       </Button>
     </>
   );
+};
+
+export const getAvatar = async (id: string | number) => {
+  return supabase.from("profiles").select("*").eq("id", id);
 };
