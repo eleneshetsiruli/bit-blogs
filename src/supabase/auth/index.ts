@@ -17,5 +17,18 @@ export const logIn = async ({
   email: string;
   password: string;
 }) => {
-  supabase.auth.signInWithPassword({ email, password });
+  supabase.auth.signInWithPassword({ email, password }).then((res) => {
+    if (
+      res?.error &&
+      res.error.status &&
+      (res.error.status < 200 || res.error.status >= 300)
+    ) {
+      throw new Error("Auth");
+    }
+    return res;
+  });
+};
+
+export const logOut = () => {
+  return supabase.auth.signOut();
 };

@@ -28,6 +28,12 @@ export const SignIn = () => {
   const { mutate: handleSignIn } = useMutation({
     mutationKey: ["logIn"],
     mutationFn: logIn,
+    onSuccess: () => {
+      navigate("/");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
   function handleSubmit(ev: FormEvent<HTMLFormElement>) {
@@ -37,25 +43,17 @@ export const SignIn = () => {
       handleSignIn(signInPayload);
     }
 
-    let formIsValid = true;
     const newErrors = { email: "", password: "" };
 
     if (!signInPayload.email) {
       newErrors.email = "Email is required";
-      formIsValid = false;
     } else if (!/\S+@\S+\.\S+/.test(signInPayload.email)) {
       newErrors.email = "Email is invalid";
-      formIsValid = false;
     }
     if (!signInPayload.password) {
       newErrors.password = "Password is required";
-      formIsValid = false;
     } else if (signInPayload.password.length < 6) {
       newErrors.password = "password must be at least 6 characters";
-      formIsValid = false;
-    }
-    if (formIsValid) {
-      navigate("/");
     }
 
     setErrors(newErrors);
