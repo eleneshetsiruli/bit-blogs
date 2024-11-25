@@ -4,21 +4,30 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { useAuthContext } from "@/hooks/useContext";
-import { getProfileInfo } from "@/supabase/account";
+
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import { getProfileInfo } from "./getProfileInfo";
+
+type Profile = {
+  id: string;
+  avatar_url: string | null;
+  full_name: string | null;
+  last_name?: string | null;
+  telephone?: string | null;
+};
 
 export const ProfileInfo = () => {
-  const [profileData, setProfileData] = useState([]);
+  const [profileData, setProfileData] = useState<Profile[]>([]);
 
   const { user } = useAuthContext();
   const { mutate: fetchProfileInfo } = useMutation({
     mutationKey: ["fetchprofileInfo"],
-    mutationFn: (id) => getProfileInfo(id),
+    mutationFn: (id: string) => getProfileInfo(id),
     onSuccess: (data) => {
-      setProfileData(data.data);
+      setProfileData(data.data || []);
     },
   });
 
@@ -29,24 +38,23 @@ export const ProfileInfo = () => {
   }, [user?.user?.id, fetchProfileInfo]);
 
   return (
-    <div>
-      {profileData.map((el) => (
-        <ProfileCard key={el.id} data={el} />
-      ))}
-    </div>
+    <div>{profileData?.map((el) => <ProfileCard key={el.id} data={el} />)}</div>
   );
 };
 
-export const ProfileCard = ({ data }) => {
+export const ProfileCard: React.FC<{ data: Profile }> = ({ data }) => {
   const { t } = useTranslation();
   const { lang } = useParams();
 
-  const fullName = data[`full_name_${lang}`] || data.full_name_en;
-  const lastName = data[`last_name_${lang}`] || data.last_name_en;
+  const fullNameField = `full_name_${lang}` as keyof Profile;
+  const lastNameField = `last_name_${lang}` as keyof Profile;
+
+  const fullName = data[fullNameField] || data.full_name;
+  const lastName = data[lastNameField] || data.last_name;
 
   return (
     <div className="mt-[50px] flex w-[100vh] items-center justify-center">
-      <img className="w-[300px]" src={data.avatar_url} alt="avatar" />
+      <img className="w-[300px]" src={data.avatar_url || ""} alt="avatar" />
       <div className="flex w-[400px] flex-col items-center justify-center gap-[20px] text-center">
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel> {t("profile-page.name")}</ResizablePanel>

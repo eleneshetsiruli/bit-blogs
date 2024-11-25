@@ -25,11 +25,10 @@ export const Profile = () => {
     last_name_ka: "",
     last_name_en: "",
     telephone: "",
+    id: "",
   });
 
-  const [profileChanges, setProfileChanges] = useState<
-    Partial<FillProfileInfoPayload>
-  >({});
+  const [profileChanges, setProfileChanges] = useState({});
 
   const avatarOptions = ["Jack", "Jude", "Liam", "Emery", "Luis"];
 
@@ -60,9 +59,9 @@ export const Profile = () => {
   function handleSubmit(ev: FormEvent<HTMLFormElement>) {
     ev.preventDefault();
 
-    const updatedPayload = {
+    const updatedPayload: FillProfileInfoPayload = {
       ...profileChanges,
-      id: user?.user?.id,
+      id: user?.user.id || "",
     };
 
     handleFillProfile(updatedPayload);
@@ -86,7 +85,7 @@ export const Profile = () => {
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.username")}</p>
           <Input
-            value={profilePayload.username}
+            value={profilePayload.username || ""}
             onChange={(ev) => {
               const newValue = ev.target.value;
               setProfilePayload((prev) => ({
@@ -102,7 +101,7 @@ export const Profile = () => {
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.fullNameEn")}</p>
           <Input
-            value={profilePayload.full_name_en}
+            value={profilePayload.full_name_en || ""}
             onChange={(ev) => {
               const newValue = ev.target.value;
               setProfilePayload((prev) => ({
@@ -121,7 +120,7 @@ export const Profile = () => {
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.fullNameKa")}</p>
           <Input
-            value={profilePayload.full_name_ka}
+            value={profilePayload.full_name_ka || ""}
             onChange={(ev) => {
               const newValue = ev.target.value;
               setProfilePayload((prev) => ({
@@ -141,7 +140,7 @@ export const Profile = () => {
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.lastNameKa")}</p>
           <Input
-            value={profilePayload.last_name_ka}
+            value={profilePayload.last_name_ka || ""}
             onChange={(ev) => {
               const newValue = ev.target.value;
               setProfilePayload((prev) => ({
@@ -160,7 +159,7 @@ export const Profile = () => {
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.lastNameEn")}</p>
           <Input
-            value={profilePayload.last_name_en}
+            value={profilePayload.last_name_en || ""}
             onChange={(ev) => {
               const newValue = ev.target.value;
               setProfilePayload((prev) => ({
@@ -179,7 +178,7 @@ export const Profile = () => {
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.Telephone")}</p>
           <Input
-            value={profilePayload.telephone}
+            value={profilePayload.telephone || ""}
             onChange={(ev) => {
               const newValue = ev.target.value;
               setProfilePayload((prev) => ({

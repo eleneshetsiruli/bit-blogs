@@ -1,11 +1,11 @@
 import { PropsWithChildren, useState } from "react";
 import { AuthContext } from ".";
-import { User } from "@supabase/supabase-js";
+import { Session } from "@supabase/supabase-js";
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [user, setUser] = useState<User | undefined>(undefined);
+  const [user, setUser] = useState<Session | null>(null);
 
-  const handleSetUser = (user: User) => {
+  const handleSetUser = (user: Session | null) => {
     setUser(user);
   };
   return (
