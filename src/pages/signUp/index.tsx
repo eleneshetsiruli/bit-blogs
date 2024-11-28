@@ -56,11 +56,13 @@ export function SignUp() {
             <p className="w-[100px]">{t("sign-up.name")}</p>
             <div className="flex w-[400px] flex-col items-center justify-center gap-2">
               <Input
-                {...register("username", { required: true })}
+                {...register("username", { required: "sign-up.required" })}
                 className={erorBorder}
               />
 
-              {formState.errors?.username && <p>{t("sign-up.required")}</p>}
+              {formState.errors?.username && (
+                <p>{t(formState.errors.username.message || "")}</p>
+              )}
             </div>
           </div>
 
@@ -71,14 +73,16 @@ export function SignUp() {
                 className={formState.errors.email && "border-red-600"}
                 type="email"
                 {...register("email", {
-                  required: t("sign-up.required"),
+                  required: "sign-up.required",
                   pattern: {
                     value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: t("sign-up.invalid"),
+                    message: "sign-up.invalid",
                   },
                 })}
               />
-              {formState.errors.email && <p>{t("sign-up.invalid")}</p>}
+              {formState.errors.email && (
+                <p>{t(formState.errors.email.message || "")}</p>
+              )}
             </div>
           </div>
 
@@ -89,11 +93,16 @@ export function SignUp() {
                 className={formState.errors.password ? "border-red-700" : ""}
                 type="password"
                 {...register("password", {
-                  required: true,
-                  minLength: 6,
+                  required: "sign-up.required",
+                  minLength: {
+                    value: 6,
+                    message: "sign-up.min",
+                  },
                 })}
               />
-              {formState.errors.password && <span> {t("sign-up.min")}</span>}
+              {formState.errors.password && (
+                <span> {t(formState.errors.password.message || "")}</span>
+              )}
             </div>
           </div>
 
@@ -104,11 +113,16 @@ export function SignUp() {
                 className={formState.errors.password ? "border-red-700" : ""}
                 type="password"
                 {...register("repassword", {
-                  required: true,
-                  minLength: 6,
+                  required: "sign-up.required",
+                  minLength: {
+                    value: 6,
+                    message: "sign-up.min",
+                  },
                 })}
               />
-              {formState.errors.repassword && <span>{t("sign-up.min")}</span>}
+              {formState.errors.repassword && (
+                <span>{t(formState.errors.repassword.message || "")}</span>
+              )}
             </div>
           </div>
 

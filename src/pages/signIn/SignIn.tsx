@@ -19,12 +19,7 @@ export const SignIn = () => {
   const { lang } = useParams();
   const { t } = useTranslation();
 
-  const {
-    register,
-
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignInFormData>();
+  const { register, handleSubmit, formState } = useForm<SignInFormData>();
 
   const { mutate: handleSignIn } = useMutation({
     mutationKey: ["logIn"],
@@ -60,14 +55,16 @@ export const SignIn = () => {
           <p>{t("login-page.email")}</p>
           <Input
             {...register("email", {
-              required: "Email is required",
-              pattern: /\S+@\S+\.\S+/,
+              required: "sign-up.required",
+              pattern: { value: /\S+@\S+\.\S+/, message: "sign-up.invalid" },
             })}
             placeholder="john@example.com"
             className="border-chart-1"
           />
-          {errors.email && (
-            <p className="text-red-600">{t("sign-up.invalid")}</p>
+          {formState.errors?.email && (
+            <p className="text-red-600">
+              {t(formState.errors?.email?.message || "")}
+            </p>
           )}
         </CardContent>
 
@@ -75,14 +72,19 @@ export const SignIn = () => {
           <p>{t("login-page.password")}</p>
           <Input
             {...register("password", {
-              required: "Password is required",
-              minLength: 6,
+              required: "sign-up.required",
+              minLength: {
+                value: 6,
+                message: "sign-up.min",
+              },
             })}
             type="password"
             className="border-chart-1"
           />
-          {errors.password && (
-            <p className="text-red-500">{t("sign-up.min")}</p>
+          {formState.errors.password && (
+            <p className="text-red-500">
+              {t(formState.errors.password.message || "")}
+            </p>
           )}
 
           <Button type="submit" className="w-[92%]">

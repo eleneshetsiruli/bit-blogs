@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ import { useAuthContext } from "@/hooks/useContext";
 import { useForm } from "react-hook-form";
 
 export const Profile = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const { lang } = useParams();
@@ -28,7 +28,7 @@ export const Profile = () => {
     handleSubmit,
     setValue,
     watch,
-    trigger,
+    clearErrors,
     formState: { errors },
   } = useForm<FillProfileInfoPayload>({
     defaultValues: {
@@ -39,15 +39,23 @@ export const Profile = () => {
       last_name_ka: "",
       last_name_en: "",
       telephone: "",
-      id: user?.user.id || "",
+      id: user?.user.id || "Invalid username",
     },
+    mode: "onChange",
   });
 
   const [profileChanges, setProfileChanges] = useState({});
 
   const avatarOptions = ["Jack", "Jude", "Liam", "Emery", "Luis"];
 
-  const handleInputChange = (name: string, value: string) => {
+  const handleInputChange = (
+    name: keyof FillProfileInfoPayload,
+    value: string,
+  ) => {
+    if (value) {
+      clearErrors(name);
+    }
+
     setProfileChanges((prev) => ({
       ...prev,
       [name]: value,
@@ -71,22 +79,12 @@ export const Profile = () => {
   function onSubmit() {
     const updatedPayload: FillProfileInfoPayload = {
       ...profileChanges,
-      id: user?.user.id || "",
+      id: user?.user.id || "Invalid username",
     };
 
     handleFillProfile(updatedPayload);
     navigate("/");
   }
-
-  useEffect(() => {
-    if (lang && lang !== i18n.language) {
-      i18n.changeLanguage(lang);
-    }
-  }, [lang, i18n]);
-
-  useEffect(() => {
-    trigger();
-  }, [i18n.language, trigger]);
 
   return (
     <form
@@ -105,18 +103,23 @@ export const Profile = () => {
           <p>{t("profile-page.username")}</p>
           <Input
             {...register("username", {
-              maxLength: 6,
+              maxLength: {
+                value: 6,
+                message: "profile-page.max",
+              },
               pattern: {
                 value: /^[a-zA-Z]+$/,
-                message: t("profile-page.usernameOnlyLetters"),
+                message: "profile-page.usernameOnlyLetters",
               },
             })}
             className="border-chart-1"
-            onChange={(e) => handleInputChange("username", e.target.value)}
+            onChange={(e) => {
+              handleInputChange("username", e.target.value);
+            }}
           />
           {errors.username && (
             <span className="text-red-500">
-              {errors.username.message || t("profile-page.max")}
+              {t(errors.username.message || "")}
             </span>
           )}
         </CardContent>
@@ -163,18 +166,22 @@ export const Profile = () => {
             {...register("telephone", {
               minLength: {
                 value: 9,
-                message: t("profile-page.telephoneMinLength"),
+                message: "profile-page.telephoneMinLength",
               },
               pattern: {
                 value: /^[0-9]*$/,
-                message: t("profile-page.telephoneInvalid"),
+                message: "profile-page.telephoneInvalid",
               },
             })}
             className="border-chart-1"
-            onChange={(e) => handleInputChange("telephone", e.target.value)}
+            onChange={(e) => {
+              handleInputChange("telephone", e.target.value);
+            }}
           />
           {errors.telephone && (
-            <span className="text-red-500">{errors.telephone.message}</span>
+            <span className="text-red-500">
+              {t(errors.telephone.message || "")}
+            </span>
           )}
         </CardContent>
 
