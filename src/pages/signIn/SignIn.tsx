@@ -1,4 +1,3 @@
-import { FormEvent, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -13,17 +12,19 @@ import {
 } from "@/components/ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { logIn } from "@/supabase/auth";
+import { useForm } from "react-hook-form";
 
 export const SignIn = () => {
-  const [signInPayload, setSignInPayload] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [errors, setErrors] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const { lang } = useParams();
   const { t } = useTranslation();
+
+  const {
+    register,
+
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInFormData>();
 
   const { mutate: handleSignIn } = useMutation({
     mutationKey: ["logIn"],
@@ -36,32 +37,18 @@ export const SignIn = () => {
     },
   });
 
-  function handleSubmit(ev: FormEvent<HTMLFormElement>) {
-    ev.preventDefault();
+  const onSubmit = (data: { email: string; password: string }) => {
+    handleSignIn(data);
+  };
 
-    if (!!signInPayload.email && !!signInPayload.password) {
-      handleSignIn(signInPayload);
-    }
-
-    const newErrors = { email: "", password: "" };
-
-    if (!signInPayload.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(signInPayload.email)) {
-      newErrors.email = "Email is invalid";
-    }
-    if (!signInPayload.password) {
-      newErrors.password = "Password is required";
-    } else if (signInPayload.password.length < 6) {
-      newErrors.password = "password must be at least 6 characters";
-    }
-
-    setErrors(newErrors);
+  interface SignInFormData {
+    email: string;
+    password: string;
   }
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="flex h-[100vh] w-[500px] items-center justify-center self-center bg-background"
     >
       <Card className="h-[400px] w-[600px] border-chart-1 bg-background">
@@ -72,33 +59,37 @@ export const SignIn = () => {
         <CardContent className="flex flex-col gap-2">
           <p>{t("login-page.email")}</p>
           <Input
-            value={signInPayload.email}
-            onChange={(ev) =>
-              setSignInPayload((prev) => ({ ...prev, email: ev.target.value }))
-            }
+            {...register("email", {
+              required: "Email is required",
+              pattern: /\S+@\S+\.\S+/,
+            })}
             placeholder="john@example.com"
             className="border-chart-1"
           />
-          <p className="text-red-600">{errors.email}</p>
+          {errors.email && (
+            <p className="text-red-600">{t("sign-up.invalid")}</p>
+          )}
         </CardContent>
 
         <CardContent className="flex flex-col gap-2">
           <p>{t("login-page.password")}</p>
           <Input
-            value={signInPayload.password}
-            onChange={(ev) =>
-              setSignInPayload((prev) => ({
-                ...prev,
-                password: ev.target.value,
-              }))
-            }
+            {...register("password", {
+              required: "Password is required",
+              minLength: 6,
+            })}
+            type="password"
             className="border-chart-1"
           />
-          <p className="text-red-500">{errors.password}</p>
+          {errors.password && (
+            <p className="text-red-500">{t("sign-up.min")}</p>
+          )}
+
+          <Button type="submit" className="w-[92%]">
+            {t("login-page.login")}
+          </Button>
         </CardContent>
-        <Button type="submit" className="ml-5 mr-5 w-[92%]">
-          {t("login-page.login")}
-        </Button>
+
         <CardFooter className="mt-2 flex justify-between">
           <Link to={""}>
             <span className="text-sm text-primary hover:underline">

@@ -11,5 +11,9 @@
   "lastNameKa": "გვარი ქართულ ენაზე",
   "avatar": "ავატარი",
   "save": "შენახვა",
-  "selectAvatar": "აირჩიეთ ავატარი"
+  "selectAvatar": "აირჩიეთ ავატარი",
+  "max": "მაქსიმუმ 6 სიმბოლო",
+  "usernameOnlyLetters": "არასწორი ფორმატი",
+  "telephoneMinLength": "მინიმუმ 9 სიმბოლო",
+  " telephoneInvalid": "მხოლოდ ციფრები"
 }

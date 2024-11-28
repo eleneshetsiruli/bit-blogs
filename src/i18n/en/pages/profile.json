@@ -11,5 +11,9 @@
   "lastNameKa": "Last Name Georgian",
   "avatar": "avatar",
   "save": "save",
-  "selectAvatar": "selectAvatar"
+  "selectAvatar": "selectAvatar",
+  "max": "max length 6 character",
+  "usernameOnlyLetters": "only letters",
+  "telephoneMinLength": "min-length 9",
+  "telephoneInvalid": "only numbers"
 }

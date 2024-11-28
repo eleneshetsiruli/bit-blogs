@@ -8,57 +8,67 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { FormEvent, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { FillProfileInfoPayload } from "@/supabase/account/index.types";
 import { FillProfileInfo } from "@/supabase/account";
 import { useAuthContext } from "@/hooks/useContext";
+import { useForm } from "react-hook-form";
 
 export const Profile = () => {
-  const [profilePayload, setProfilePayload] = useState<FillProfileInfoPayload>({
-    username: "",
-    full_name_ka: "",
-    full_name_en: "",
-    avatar_url: "",
-    last_name_ka: "",
-    last_name_en: "",
-    telephone: "",
-    id: "",
+  const { t, i18n } = useTranslation();
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const { lang } = useParams();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    trigger,
+    formState: { errors },
+  } = useForm<FillProfileInfoPayload>({
+    defaultValues: {
+      username: "",
+      full_name_ka: "",
+      full_name_en: "",
+      avatar_url: "",
+      last_name_ka: "",
+      last_name_en: "",
+      telephone: "",
+      id: user?.user.id || "",
+    },
   });
 
   const [profileChanges, setProfileChanges] = useState({});
 
   const avatarOptions = ["Jack", "Jude", "Liam", "Emery", "Luis"];
 
+  const handleInputChange = (name: string, value: string) => {
+    setProfileChanges((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleAvatarChange = (selectedAvatar: string) => {
     const avatarUrl = `https://api.dicebear.com/6.x/avataaars/png?seed=${selectedAvatar}`;
-    setProfilePayload((prev) => ({
-      ...prev,
-      avatar_url: avatarUrl,
-    }));
+    setValue("avatar_url", avatarUrl);
     setProfileChanges((prev) => ({
       ...prev,
       avatar_url: avatarUrl,
     }));
   };
 
-  const { t } = useTranslation();
-
   const { mutate: handleFillProfile } = useMutation({
     mutationKey: ["fill-profile-info"],
     mutationFn: FillProfileInfo,
   });
 
-  const { user } = useAuthContext();
-
-  const navigate = useNavigate();
-  const { lang } = useParams();
-
-  function handleSubmit(ev: FormEvent<HTMLFormElement>) {
-    ev.preventDefault();
-
+  function onSubmit() {
     const updatedPayload: FillProfileInfoPayload = {
       ...profileChanges,
       id: user?.user.id || "",
@@ -68,9 +78,19 @@ export const Profile = () => {
     navigate("/");
   }
 
+  useEffect(() => {
+    if (lang && lang !== i18n.language) {
+      i18n.changeLanguage(lang);
+    }
+  }, [lang, i18n]);
+
+  useEffect(() => {
+    trigger();
+  }, [i18n.language, trigger]);
+
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="mt-[100px] flex w-[500px] items-center justify-center self-center bg-background"
     >
       <Card className="h-[850px] w-[600px] border-chart-1 bg-background">
@@ -78,120 +98,84 @@ export const Profile = () => {
           <CardTitle className="text-lg">
             {t("profile-page.profileInfo")}
           </CardTitle>
-
           <CardDescription>{t("profile-page.edit")}</CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.username")}</p>
           <Input
-            value={profilePayload.username || ""}
-            onChange={(ev) => {
-              const newValue = ev.target.value;
-              setProfilePayload((prev) => ({
-                ...prev,
-                username: newValue,
-              }));
-              setProfileChanges((prev) => ({ ...prev, username: newValue }));
-            }}
+            {...register("username", {
+              maxLength: 6,
+              pattern: {
+                value: /^[a-zA-Z]+$/,
+                message: t("profile-page.usernameOnlyLetters"),
+              },
+            })}
             className="border-chart-1"
+            onChange={(e) => handleInputChange("username", e.target.value)}
           />
+          {errors.username && (
+            <span className="text-red-500">
+              {errors.username.message || t("profile-page.max")}
+            </span>
+          )}
         </CardContent>
 
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.fullNameEn")}</p>
           <Input
-            value={profilePayload.full_name_en || ""}
-            onChange={(ev) => {
-              const newValue = ev.target.value;
-              setProfilePayload((prev) => ({
-                ...prev,
-                full_name_en: newValue,
-              }));
-              setProfileChanges((prev) => ({
-                ...prev,
-                full_name_en: newValue,
-              }));
-            }}
+            {...register("full_name_en")}
             className="border-chart-1"
+            onChange={(e) => handleInputChange("full_name_en", e.target.value)}
           />
         </CardContent>
 
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.fullNameKa")}</p>
           <Input
-            value={profilePayload.full_name_ka || ""}
-            onChange={(ev) => {
-              const newValue = ev.target.value;
-              setProfilePayload((prev) => ({
-                ...prev,
-                full_name_ka: newValue,
-              }));
-
-              setProfileChanges((prev) => ({
-                ...prev,
-                full_name_ka: newValue,
-              }));
-            }}
+            {...register("full_name_ka")}
             className="border-chart-1"
+            onChange={(e) => handleInputChange("full_name_ka", e.target.value)}
           />
         </CardContent>
 
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.lastNameKa")}</p>
           <Input
-            value={profilePayload.last_name_ka || ""}
-            onChange={(ev) => {
-              const newValue = ev.target.value;
-              setProfilePayload((prev) => ({
-                ...prev,
-                last_name_ka: newValue,
-              }));
-              setProfileChanges((prev) => ({
-                ...prev,
-                last_name_ka: newValue,
-              }));
-            }}
+            {...register("last_name_ka")}
             className="border-chart-1"
+            onChange={(e) => handleInputChange("last_name_ka", e.target.value)}
           />
         </CardContent>
 
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.lastNameEn")}</p>
           <Input
-            value={profilePayload.last_name_en || ""}
-            onChange={(ev) => {
-              const newValue = ev.target.value;
-              setProfilePayload((prev) => ({
-                ...prev,
-                last_name_en: newValue,
-              }));
-              setProfileChanges((prev) => ({
-                ...prev,
-                last_name_en: newValue,
-              }));
-            }}
+            {...register("last_name_en")}
             className="border-chart-1"
+            onChange={(e) => handleInputChange("last_name_en", e.target.value)}
           />
         </CardContent>
 
         <CardContent className="flex flex-col gap-2">
           <p>{t("profile-page.Telephone")}</p>
           <Input
-            value={profilePayload.telephone || ""}
-            onChange={(ev) => {
-              const newValue = ev.target.value;
-              setProfilePayload((prev) => ({
-                ...prev,
-                telephone: newValue,
-              }));
-              setProfileChanges((prev) => ({
-                ...prev,
-                telephone: newValue,
-              }));
-            }}
+            {...register("telephone", {
+              minLength: {
+                value: 9,
+                message: t("profile-page.telephoneMinLength"),
+              },
+              pattern: {
+                value: /^[0-9]*$/,
+                message: t("profile-page.telephoneInvalid"),
+              },
+            })}
             className="border-chart-1"
+            onChange={(e) => handleInputChange("telephone", e.target.value)}
           />
+          {errors.telephone && (
+            <span className="text-red-500">{errors.telephone.message}</span>
+          )}
         </CardContent>
 
         <CardContent className="flex flex-col gap-4">
@@ -209,9 +193,9 @@ export const Profile = () => {
             ))}
           </select>
 
-          {profilePayload.avatar_url && (
+          {watch("avatar_url") && (
             <img
-              src={profilePayload.avatar_url}
+              src={watch("avatar_url") || ""}
               alt="Selected Avatar"
               className="h-16 w-16 rounded-full"
             />

@@ -8,161 +8,113 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { FormEvent, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { register } from "@/supabase/auth";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { Link, useParams } from "react-router-dom";
+import { registerSupabese } from "@/supabase/auth";
 
-export const SignUp = () => {
-  const [registerPayload, setRegisterPayload] = useState({
-    email: "",
-    password: "",
-  });
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
+interface SignUpFormData {
+  username: string;
+  email: string;
+  password: string;
+  repassword: string;
+}
+
+export function SignUp() {
+  const { register, handleSubmit, formState } = useForm<SignUpFormData>();
+
+  const onSubmit: SubmitHandler<SignUpFormData> = (fieldValues) => {
+    handleRegister(fieldValues);
+  };
+
   const { t } = useTranslation();
-
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-    name: "",
-    confirmPassword: "",
-  });
+  const { lang } = useParams();
 
   const { mutate: handleRegister } = useMutation({
     mutationKey: ["register"],
-    mutationFn: register,
+    mutationFn: registerSupabese,
   });
 
-  const navigate = useNavigate();
-  const { lang } = useParams();
-
-  function handleSubmit(ev: FormEvent<HTMLFormElement>) {
-    ev.preventDefault();
-
-    if (!!registerPayload.email && !!registerPayload.password) {
-      handleRegister(registerPayload);
-    }
-
-    let formIsValid = true;
-    const newErrors = {
-      email: "",
-      password: "",
-      name: "",
-      confirmPassword: "",
-    };
-
-    if (!registerPayload.email) {
-      newErrors.email = "Email is required";
-      formIsValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(registerPayload.email)) {
-      newErrors.email = "Email is invalid";
-      formIsValid = false;
-    }
-    if (!registerPayload.password) {
-      newErrors.password = "Password is required";
-      formIsValid = false;
-    } else if (registerPayload.password.length < 6) {
-      newErrors.password = "password must be at least 6 characters";
-      formIsValid = false;
-    }
-
-    if (!name) {
-      newErrors.name = "Password is required";
-      formIsValid = false;
-    } else if (name.length < 4) {
-      newErrors.name = "name must be at least 4 characters";
-      formIsValid = false;
-    }
-
-    if (!confirmPassword) {
-      newErrors.confirmPassword = "Confirm Password is required";
-      formIsValid = false;
-    } else if (confirmPassword !== registerPayload.password) {
-      newErrors.confirmPassword = "Passwords do not match";
-      formIsValid = false;
-    }
-
-    if (formIsValid) {
-      navigate(`/${lang}/sign-in`);
-    }
-
-    setErrors(newErrors);
-  }
+  const erorBorder = formState.errors?.username
+    ? "border-red-700"
+    : "border-chart-1";
 
   return (
     <form
-      onSubmit={handleSubmit}
-      className="flex h-[100vh] w-[500px] items-center justify-center self-center bg-background"
+      className="flex items-center justify-center"
+      onSubmit={handleSubmit(onSubmit)}
     >
-      <Card className="h-[600px] w-[600px] border-chart-1 bg-background">
+      <Card className="mt-20 flex h-[100vh] w-[600px] flex-col gap-9 border-chart-1 bg-background">
         <CardHeader className="flex items-center gap-3">
           <CardTitle className="text-lg">{t("sign-up.title")}</CardTitle>
-
           <CardDescription>{t("sign-up.text")}</CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-2">
-          <p>{t("sign-up.name")}</p>
-          <Input
-            value={name}
-            onChange={(ev) => setName(ev.target.value)}
-            placeholder="john Doe"
-            className="border-chart-1"
-          />
-          <p className="text-red-600">{errors.name}</p>
+        <CardContent className="flex flex-col gap-10">
+          <div className="flex gap-2">
+            <p className="w-[100px]">{t("sign-up.name")}</p>
+            <div className="flex w-[400px] flex-col items-center justify-center gap-2">
+              <Input
+                {...register("username", { required: true })}
+                className={erorBorder}
+              />
+
+              {formState.errors?.username && <p>{t("sign-up.required")}</p>}
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <p className="w-[100px]">{t("sign-up.Email")}</p>
+            <div className="flex w-[400px] flex-col items-center justify-center gap-2">
+              <Input
+                className={formState.errors.email && "border-red-600"}
+                type="email"
+                {...register("email", {
+                  required: t("sign-up.required"),
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: t("sign-up.invalid"),
+                  },
+                })}
+              />
+              {formState.errors.email && <p>{t("sign-up.invalid")}</p>}
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <p className="w-[100px]">{t("sign-up.Password")}</p>
+            <div className="flex w-[400px] flex-col items-center justify-center gap-2">
+              <Input
+                className={formState.errors.password ? "border-red-700" : ""}
+                type="password"
+                {...register("password", {
+                  required: true,
+                  minLength: 6,
+                })}
+              />
+              {formState.errors.password && <span> {t("sign-up.min")}</span>}
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <p className="w-[100px]">{t("sign-up.confirm")}</p>
+            <div className="flex w-[400px] flex-col items-center justify-center gap-2">
+              <Input
+                className={formState.errors.password ? "border-red-700" : ""}
+                type="password"
+                {...register("repassword", {
+                  required: true,
+                  minLength: 6,
+                })}
+              />
+              {formState.errors.repassword && <span>{t("sign-up.min")}</span>}
+            </div>
+          </div>
+
+          <Button> {t("sign-up.signUp")}</Button>
         </CardContent>
 
-        <CardContent className="flex flex-col gap-2">
-          <p>{t("sign-up.Email")}</p>
-          <Input
-            type="email"
-            value={registerPayload.email}
-            onChange={(ev) =>
-              setRegisterPayload((prev) => ({
-                ...prev,
-                email: ev.target.value,
-              }))
-            }
-            placeholder="john@example.com"
-            className="border-chart-1"
-          />
-          <p className="text-red-600">{errors.email}</p>
-        </CardContent>
-
-        <CardContent className="flex flex-col gap-2">
-          <p>{t("sign-up.Password")}</p>
-          <Input
-            value={registerPayload.password}
-            type="password"
-            onChange={(ev) =>
-              setRegisterPayload((prev) => ({
-                ...prev,
-                password: ev.target.value,
-              }))
-            }
-            className="border-chart-1"
-          />
-          <p className="text-red-500">{errors.password}</p>
-        </CardContent>
-
-        <CardContent className="flex flex-col gap-2">
-          <p>{t("sign-up.confirm")}</p>
-          <Input
-            type="password"
-            value={confirmPassword}
-            onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-              setConfirmPassword(ev.target.value)
-            }
-            className="border-chart-1"
-          />
-          <p className="text-red-500">{errors.confirmPassword}</p>
-        </CardContent>
-
-        <Button type="submit" className="ml-5 mr-5 w-[92%]">
-          {t("sign-up.signUp")}
-        </Button>
         <CardFooter className="mt-2 flex justify-center gap-2">
           <span>{t("sign-up.alrady")}</span>
           <Link to={`/${lang}/sign-in`}>
@@ -172,4 +124,4 @@ export const SignUp = () => {
       </Card>
     </form>
   );
-};
+}

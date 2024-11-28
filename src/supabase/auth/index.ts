@@ -1,6 +1,6 @@
 import { supabase } from "..";
 
-export const register = async ({
+export const registerSupabese = async ({
   email,
   password,
 }: {
