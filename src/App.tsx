@@ -13,6 +13,7 @@ import { supabase } from "./supabase";
 import { AuthGuard } from "./route-guards/auth";
 import { Profile } from "./pages/profile";
 import { ProfileInfo } from "./pages/profile-info";
+import { CreateBlogs } from "./pages/createBlogs";
 
 function App() {
   const { handleSetUser } = useAuthContext();
@@ -46,6 +47,15 @@ function App() {
           element={
             <AuthGuard>
               <SignUp />
+            </AuthGuard>
+          }
+        />
+
+        <Route
+          path="createBlog"
+          element={
+            <AuthGuard>
+              <CreateBlogs />
             </AuthGuard>
           }
         />

@@ -1,6 +1,7 @@
 import { NavLink, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuthContext } from "@/hooks/useContext";
+import { PlusIcon } from "./svgs/PlusSvg";
 
 export const NavLinks = () => {
   const { t } = useTranslation();
@@ -21,6 +22,11 @@ export const NavLinks = () => {
       {user && (
         <NavLink className={"hover:text-ring"} to={`/${lang}/profile`}>
           {t("home-page.profile")}
+        </NavLink>
+      )}
+      {user && (
+        <NavLink to={"/createBlogs"}>
+          <PlusIcon />
         </NavLink>
       )}
     </div>
