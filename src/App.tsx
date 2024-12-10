@@ -51,15 +51,7 @@ function App() {
           }
         />
 
-        <Route
-          path="createBlog"
-          element={
-            <AuthGuard>
-              <CreateBlogs />
-            </AuthGuard>
-          }
-        />
-
+        <Route path="createBlogs" element={<CreateBlogs />} />
         <Route path="profile-info" element={<ProfileInfo />} />
         <Route path="profile" element={<Profile />} />
         <Route path="ind-author" element={<IndividualAuthor />} />

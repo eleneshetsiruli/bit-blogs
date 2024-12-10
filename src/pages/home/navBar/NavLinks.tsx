@@ -25,7 +25,7 @@ export const NavLinks = () => {
         </NavLink>
       )}
       {user && (
-        <NavLink to={"/createBlogs"}>
+        <NavLink to={`/${lang}/createBlogs`}>
           <PlusIcon />
         </NavLink>
       )}
