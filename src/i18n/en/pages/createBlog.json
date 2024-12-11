@@ -4,5 +4,7 @@
   "titleKa": "Title in Georgian",
   "descriptionKa": "Description in Georgian",
   "create": "Create",
-  "image": "Upload Image"
+  "image": "Upload Image",
+  "required": "required",
+  "matches": "cannot contain numbers"
 }

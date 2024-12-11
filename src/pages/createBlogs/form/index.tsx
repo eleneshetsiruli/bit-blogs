@@ -10,81 +10,16 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ImageUpload } from "./ImageUpload";
 import { useRef } from "react";
+import { schemaBlogs } from "../validation";
+import { yupResolver } from "@hookform/resolvers/yup";
 export const CreateBlogsForm = () => {
-  const { control, handleSubmit, reset } = useForm<CreateBlogFormData>();
+  const { control, handleSubmit, reset, formState } =
+    useForm<CreateBlogFormData>({
+      resolver: yupResolver(schemaBlogs),
+    });
   const { t } = useTranslation();
   const { user } = useAuthContext();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // const onSubmit: SubmitHandler<CreateBlogFormData> = async (data) => {
-  //   const file = data.image_url;
-
-  //   if (!file) {
-  //     toast.error("No image file selected", {
-  //       position: "top-center",
-  //       autoClose: 3000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //     });
-  //     console.error("No image file selected");
-  //     return;
-  //   }
-  //   try {
-  //     const { data: uploadData, error: uploadError } = await supabase.storage
-  //       .from("blog_images")
-  //       .upload(file.name, file);
-
-  //     if (uploadError) {
-  //       toast.error(`Error uploading image: ${uploadError.message}`, {
-  //         position: "top-center",
-  //         autoClose: 3000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //       });
-  //       console.error("Error uploading image:", uploadError.message);
-  //       return;
-  //     }
-
-  //     const imageUrl = uploadData?.fullPath;
-
-  //     if (!imageUrl) {
-  //       toast.error("Failed to get image URL after upload", {
-  //         position: "top-center",
-  //         autoClose: 3000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //       });
-  //       console.error("Failed to get image URL after upload");
-  //       return;
-  //     }
-
-  //     const { data: blogData, error: insertError } = await supabase
-  //       .from("blogs")
-  //       .insert([
-  //         {
-  //           title_en: data.title_en,
-  //           title_ka: data.title_ka,
-  //           description_en: data.description_en,
-  //           description_ka: data.description_ka,
-  //           image_url: imageUrl,
-  //           user_id: user?.user.id ?? "",
-  //         },
-  //       ]);
-
-  //     if (insertError) {
-  //       console.error("Error inserting blog:", insertError.message);
-  //     } else {
-  //       toast.success("Blog created successfully!");
-  //       console.log("Blog created successfully:", blogData);
-  //       reset();
-  //       if (fileInputRef.current) {
-  //         fileInputRef.current.value = "";
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Unexpected error:", error);
-  //   }
-  // };
 
   const onSubmit: SubmitHandler<CreateBlogFormData> = async (data) => {
     const file = data.image_url;
@@ -101,11 +36,9 @@ export const CreateBlogsForm = () => {
     }
 
     try {
-      // Step 1: Upload the image to Supabase storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("blog_images")
-        .upload(`${Date.now()}_${file.name}`, file); // Add a unique prefix to avoid filename collisions
-
+        .upload(`${Date.now()}_${file.name}`, file);
       if (uploadError) {
         toast.error(`Error uploading image: ${uploadError.message}`, {
           position: "top-center",
@@ -134,7 +67,6 @@ export const CreateBlogsForm = () => {
         return;
       }
 
-      // Step 3: Insert the blog data into the database
       const { data: blogData, error: insertError } = await supabase
         .from("blogs")
         .insert([
@@ -143,7 +75,7 @@ export const CreateBlogsForm = () => {
             title_ka: data.title_ka,
             description_en: data.description_en,
             description_ka: data.description_ka,
-            image_url: publicImageUrl, // Save the public URL
+            image_url: publicImageUrl,
             user_id: user?.user.id ?? "",
           },
         ]);
@@ -185,21 +117,46 @@ export const CreateBlogsForm = () => {
           <ContentBox>
             <p>{t("createBlog-page.titleKa")}</p>
             <BlogsInput name="title_ka" control={control} />
+            {formState.errors.title_ka && (
+              <p className="text-red-500">
+                {formState.errors.title_ka.message}
+              </p>
+            )}
 
             <p>{t("createBlog-page.descriptionKa")}</p>
             <BlogsInput name="description_ka" control={control} />
+            {formState.errors.description_ka && (
+              <p className="text-red-500">
+                {formState.errors.description_ka.message}
+              </p>
+            )}
           </ContentBox>
 
           <ContentBox>
             <p>{t("createBlog-page.title")}</p>
             <BlogsInput name="title_en" control={control} />
+            {formState.errors.title_en && (
+              <p className="text-red-500">
+                {formState.errors.title_en.message}
+              </p>
+            )}
 
             <p>{t("createBlog-page.description")}</p>
             <BlogsInput name="description_en" control={control} />
+            {formState.errors.description_ka && (
+              <p className="text-red-500">
+                {formState.errors.description_ka.message}
+              </p>
+            )}
           </ContentBox>
         </div>
         <div>
           <ImageUpload fileInputRef={fileInputRef} control={control} />
+          {formState.errors.title_ka && (
+            <p className="text-red-500">
+              {formState.errors?.image_url?.message}
+            </p>
+          )}
         </div>
         <Button>{t("createBlog-page.create")}</Button>
       </div>

@@ -15,5 +15,5 @@
   "max": "მაქსიმუმ 6 სიმბოლო",
   "usernameOnlyLetters": "არასწორი ფორმატი",
   "telephoneMinLength": "მინიმუმ 9 სიმბოლო",
-  " telephoneInvalid": "მხოლოდ ციფრები"
+  "telephoneInvalid": "მხოლოდ ციფრები"
 }
