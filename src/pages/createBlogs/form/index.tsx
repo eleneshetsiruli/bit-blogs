@@ -7,9 +7,10 @@ import { ContentBox } from "./ContentBox";
 import { supabase } from "@/supabase";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/hooks/useContext";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export const CreateBlogsForm = () => {
-  const { control, handleSubmit } = useForm<CreateBlogFormData>();
+  const { control, handleSubmit, reset } = useForm<CreateBlogFormData>();
   const { t } = useTranslation();
   const { user } = useAuthContext();
 
@@ -17,6 +18,12 @@ export const CreateBlogsForm = () => {
     const file = data.image_url;
 
     if (!file) {
+      toast.error("No image file selected", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+      });
       console.error("No image file selected");
       return;
     }
@@ -26,12 +33,25 @@ export const CreateBlogsForm = () => {
         .upload(file.name, file);
 
       if (uploadError) {
+        toast.error(`Error uploading image: ${uploadError.message}`, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+        });
         console.error("Error uploading image:", uploadError.message);
         return;
       }
+
       const imageUrl = uploadData?.path;
 
       if (!imageUrl) {
+        toast.error("Failed to get image URL after upload", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+        });
         console.error("Failed to get image URL after upload");
         return;
       }
@@ -52,7 +72,9 @@ export const CreateBlogsForm = () => {
       if (insertError) {
         console.error("Error inserting blog:", insertError.message);
       } else {
+        toast.success("Blog created successfully!");
         console.log("Blog created successfully:", blogData);
+        reset();
       }
     } catch (error) {
       console.error("Unexpected error:", error);

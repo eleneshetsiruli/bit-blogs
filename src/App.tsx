@@ -14,6 +14,7 @@ import { AuthGuard } from "./route-guards/auth";
 import { Profile } from "./pages/profile";
 import { ProfileInfo } from "./pages/profile-info";
 import { CreateBlogs } from "./pages/createBlogs";
+import { ToastContainerWrapper } from "./toast";
 
 function App() {
   const { handleSetUser } = useAuthContext();
@@ -29,35 +30,38 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route path="/:lang" element={<LayOut />}>
-        <Route path="home" element={<HomeLayout />} />
-        <Route path="about" element={<About />} />
+    <>
+      <Routes>
+        <Route path="/:lang" element={<LayOut />}>
+          <Route path="home" element={<HomeLayout />} />
+          <Route path="about" element={<About />} />
 
-        <Route
-          path="sign-in"
-          element={
-            <AuthGuard>
-              <SignIn />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="sign-up"
-          element={
-            <AuthGuard>
-              <SignUp />
-            </AuthGuard>
-          }
-        />
+          <Route
+            path="sign-in"
+            element={
+              <AuthGuard>
+                <SignIn />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="sign-up"
+            element={
+              <AuthGuard>
+                <SignUp />
+              </AuthGuard>
+            }
+          />
 
-        <Route path="createBlogs" element={<CreateBlogs />} />
-        <Route path="profile-info" element={<ProfileInfo />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="ind-author" element={<IndividualAuthor />} />
-      </Route>
-      <Route path="/" element={<Navigate to="/en/home" />} />
-    </Routes>
+          <Route path="createBlogs" element={<CreateBlogs />} />
+          <Route path="profile-info" element={<ProfileInfo />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="ind-author" element={<IndividualAuthor />} />
+        </Route>
+        <Route path="/" element={<Navigate to="/en/home" />} />
+      </Routes>
+      <ToastContainerWrapper />
+    </>
   );
 }
 
