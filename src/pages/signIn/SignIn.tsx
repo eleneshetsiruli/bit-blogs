@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,14 +18,15 @@ export const SignIn = () => {
   const navigate = useNavigate();
   const { lang } = useParams();
   const { t } = useTranslation();
-
+  const location = useLocation();
   const { register, handleSubmit, formState } = useForm<SignInFormData>();
-
+  const toNavigate = location?.state?.from?.pathname || "/";
+  console.log(toNavigate);
   const { mutate: handleSignIn } = useMutation({
     mutationKey: ["logIn"],
     mutationFn: logIn,
     onSuccess: () => {
-      navigate("/");
+      navigate(toNavigate);
     },
     onError: (error) => {
       console.log(error);

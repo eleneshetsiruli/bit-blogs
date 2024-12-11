@@ -15,6 +15,9 @@ import profilePageEn from "./en/pages/profile.json";
 
 import LanguageDetector from "i18next-browser-languagedetector";
 
+import createBlogKa from "./ka/pages/createBlog.json";
+import createBlogEn from "./en/pages/createBlog.json";
+
 const options = {
   order: ["path", "subdomain"],
   lookupQuerystring: "lang",
@@ -34,6 +37,7 @@ i18n
           "login-page": loginPageKa,
           "sign-up": signUpPageKa,
           "profile-page": profilePageKa,
+          "createBlog-page": createBlogKa,
         },
       },
 
@@ -43,6 +47,7 @@ i18n
           "login-page": loginPageEn,
           "sign-up": signUpPageEn,
           "profile-page": profilePageEn,
+          "createBlog-page": createBlogEn,
         },
       },
     },

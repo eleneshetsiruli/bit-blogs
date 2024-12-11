@@ -14,6 +14,7 @@ export const PrimaryButton: React.FC<primaryButtonProps> = ({
   variant,
 }) => {
   const navigate = useNavigate();
+
   function handleGoToSignIn() {
     navigate("sign-in");
   }
