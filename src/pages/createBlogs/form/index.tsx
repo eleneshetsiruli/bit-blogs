@@ -16,6 +16,76 @@ export const CreateBlogsForm = () => {
   const { user } = useAuthContext();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // const onSubmit: SubmitHandler<CreateBlogFormData> = async (data) => {
+  //   const file = data.image_url;
+
+  //   if (!file) {
+  //     toast.error("No image file selected", {
+  //       position: "top-center",
+  //       autoClose: 3000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //     });
+  //     console.error("No image file selected");
+  //     return;
+  //   }
+  //   try {
+  //     const { data: uploadData, error: uploadError } = await supabase.storage
+  //       .from("blog_images")
+  //       .upload(file.name, file);
+
+  //     if (uploadError) {
+  //       toast.error(`Error uploading image: ${uploadError.message}`, {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //       });
+  //       console.error("Error uploading image:", uploadError.message);
+  //       return;
+  //     }
+
+  //     const imageUrl = uploadData?.fullPath;
+
+  //     if (!imageUrl) {
+  //       toast.error("Failed to get image URL after upload", {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //       });
+  //       console.error("Failed to get image URL after upload");
+  //       return;
+  //     }
+
+  //     const { data: blogData, error: insertError } = await supabase
+  //       .from("blogs")
+  //       .insert([
+  //         {
+  //           title_en: data.title_en,
+  //           title_ka: data.title_ka,
+  //           description_en: data.description_en,
+  //           description_ka: data.description_ka,
+  //           image_url: imageUrl,
+  //           user_id: user?.user.id ?? "",
+  //         },
+  //       ]);
+
+  //     if (insertError) {
+  //       console.error("Error inserting blog:", insertError.message);
+  //     } else {
+  //       toast.success("Blog created successfully!");
+  //       console.log("Blog created successfully:", blogData);
+  //       reset();
+  //       if (fileInputRef.current) {
+  //         fileInputRef.current.value = "";
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Unexpected error:", error);
+  //   }
+  // };
+
   const onSubmit: SubmitHandler<CreateBlogFormData> = async (data) => {
     const file = data.image_url;
 
@@ -29,10 +99,12 @@ export const CreateBlogsForm = () => {
       console.error("No image file selected");
       return;
     }
+
     try {
+      // Step 1: Upload the image to Supabase storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("blog_images")
-        .upload(file.name, file);
+        .upload(`${Date.now()}_${file.name}`, file); // Add a unique prefix to avoid filename collisions
 
       if (uploadError) {
         toast.error(`Error uploading image: ${uploadError.message}`, {
@@ -45,19 +117,24 @@ export const CreateBlogsForm = () => {
         return;
       }
 
-      const imageUrl = uploadData?.path;
+      const { data: publicUrlData } = supabase.storage
+        .from("blog_images")
+        .getPublicUrl(uploadData?.path);
 
-      if (!imageUrl) {
-        toast.error("Failed to get image URL after upload", {
+      const publicImageUrl = publicUrlData?.publicUrl;
+
+      if (!publicImageUrl) {
+        toast.error("Failed to generate public URL for the uploaded image", {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
         });
-        console.error("Failed to get image URL after upload");
+        console.error("Failed to generate public URL for the uploaded image");
         return;
       }
 
+      // Step 3: Insert the blog data into the database
       const { data: blogData, error: insertError } = await supabase
         .from("blogs")
         .insert([
@@ -66,12 +143,18 @@ export const CreateBlogsForm = () => {
             title_ka: data.title_ka,
             description_en: data.description_en,
             description_ka: data.description_ka,
-            image_url: imageUrl,
+            image_url: publicImageUrl, // Save the public URL
             user_id: user?.user.id ?? "",
           },
         ]);
 
       if (insertError) {
+        toast.error(`Error inserting blog: ${insertError.message}`, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+        });
         console.error("Error inserting blog:", insertError.message);
       } else {
         toast.success("Blog created successfully!");
@@ -83,6 +166,12 @@ export const CreateBlogsForm = () => {
       }
     } catch (error) {
       console.error("Unexpected error:", error);
+      toast.error("Unexpected error occurred", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+      });
     }
   };
 

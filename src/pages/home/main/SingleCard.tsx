@@ -1,35 +1,22 @@
-import { Button } from "@/components/ui/button";
-import { Title } from "../navBar/Title";
-import { useTranslation } from "react-i18next";
-import { AuthorList } from "./AuthorList";
+import { Card } from "@/components/ui/card";
 import { SingleCardProps } from "./interfaces";
 
 export const SingleCard: React.FC<SingleCardProps> = ({
-  image,
-  author,
   text,
-  tech,
+  description,
+  imageUrl,
 }) => {
-  const { t } = useTranslation();
   return (
-    <div className="shadow-custom ml-[60px] flex h-[500px] w-[800px] flex-col justify-center gap-[15px] rounded-[10px] border-2 border-chart-1 p-[20px]">
-      <img
-        className="h-[200px] w-[100%] rounded-md object-cover"
-        src={image}
-        alt="image"
-      />
-      <Title title={t("home-page.Headline")} />
-      <AuthorList author={author} />
-      <p>{text}</p>
-      <div className="flex gap-[20px]">
-        {tech.map((el) => {
-          return (
-            <Button key={el} className="h-[10px]" variant="secondary">
-              {el}
-            </Button>
-          );
-        })}
+    <Card className="flex h-80 items-center justify-between border-chart-1 bg-background p-10 lg:w-[750px]">
+      <div className="flex flex-col gap-3 lg:w-[400px]">
+        <h1 className="font-bold text-primary">{text}</h1>
+        <p>{description}</p>
       </div>
-    </div>
+      <img
+        className="h-48 w-48 rounded-[50%] object-cover"
+        src={imageUrl}
+        alt=""
+      />
+    </Card>
   );
 };

@@ -22,8 +22,7 @@ export interface Card {
 }
 
 export interface SingleCardProps {
-  image: string;
-  author: Author[];
   text: string;
-  tech: string[];
+  description: string;
+  imageUrl: string;
 }
