@@ -1,18 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { BlogsInput } from "./BlogsInput";
 import { CreateBlogFormData } from "../interfaces";
 import { useTranslation } from "react-i18next";
 import { ContentBox } from "./ContentBox";
 import { supabase } from "@/supabase";
-import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/hooks/useContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ImageUpload } from "./ImageUpload";
+import { useRef } from "react";
 export const CreateBlogsForm = () => {
   const { control, handleSubmit, reset } = useForm<CreateBlogFormData>();
   const { t } = useTranslation();
   const { user } = useAuthContext();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const onSubmit: SubmitHandler<CreateBlogFormData> = async (data) => {
     const file = data.image_url;
@@ -75,6 +77,9 @@ export const CreateBlogsForm = () => {
         toast.success("Blog created successfully!");
         console.log("Blog created successfully:", blogData);
         reset();
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -105,22 +110,7 @@ export const CreateBlogsForm = () => {
           </ContentBox>
         </div>
         <div>
-          <p className="mb-2">{t("createBlog-page.image")}</p>
-          <Controller
-            control={control}
-            name="image_url"
-            render={({ field: { onChange } }) => {
-              return (
-                <Input
-                  type="file"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    onChange(file);
-                  }}
-                />
-              );
-            }}
-          />
+          <ImageUpload fileInputRef={fileInputRef} control={control} />
         </div>
         <Button>{t("createBlog-page.create")}</Button>
       </div>
