@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { ContentBox } from "./ContentBox";
 import { supabase } from "@/supabase";
 import { Input } from "@/components/ui/input";
-
 import { useAuthContext } from "@/hooks/useContext";
 
 export const CreateBlogsForm = () => {
@@ -14,23 +13,50 @@ export const CreateBlogsForm = () => {
   const { t } = useTranslation();
   const { user } = useAuthContext();
 
-  const onSubmit: SubmitHandler<CreateBlogFormData> = (data) => {
-    supabase.storage
-      .from("blog_images")
-      .upload(data?.image_url?.name, data?.image_url)
-      .then((res) => {
-        return supabase
-          .from("blogs")
-          .insert({
+  const onSubmit: SubmitHandler<CreateBlogFormData> = async (data) => {
+    const file = data.image_url;
+
+    if (!file) {
+      console.error("No image file selected");
+      return;
+    }
+    try {
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("blog_images")
+        .upload(file.name, file);
+
+      if (uploadError) {
+        console.error("Error uploading image:", uploadError.message);
+        return;
+      }
+      const imageUrl = uploadData?.path;
+
+      if (!imageUrl) {
+        console.error("Failed to get image URL after upload");
+        return;
+      }
+
+      const { data: blogData, error: insertError } = await supabase
+        .from("blogs")
+        .insert([
+          {
             title_en: data.title_en,
             title_ka: data.title_ka,
-            description_ka: data.description_ka,
             description_en: data.description_en,
-            image_url: res.data?.fullPath,
-            user_id: user?.user.id,
-          })
-          .then((res) => console.log(res));
-      });
+            description_ka: data.description_ka,
+            image_url: imageUrl,
+            user_id: user?.user.id ?? "",
+          },
+        ]);
+
+      if (insertError) {
+        console.error("Error inserting blog:", insertError.message);
+      } else {
+        console.log("Blog created successfully:", blogData);
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
   };
 
   return (
