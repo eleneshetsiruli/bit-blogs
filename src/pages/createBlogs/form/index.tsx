@@ -109,13 +109,10 @@ export const CreateBlogsForm = () => {
               <BlogsInput name="description_en" control={control} />
             </ContentBox>
           </div>
-          <div>
-            <ImageUpload fileInputRef={fileInputRef} control={control} />
-          </div>
+          <ImageUpload fileInputRef={fileInputRef} control={control} />
           <Button>{t("createBlog-page.create")}</Button>
         </div>
       </form>
-
       <ToastContainer position="top-right" autoClose={5000} />
     </>
   );
