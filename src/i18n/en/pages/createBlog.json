@@ -6,5 +6,15 @@
   "create": "Create",
   "image": "Upload Image",
   "required": "required",
-  "matches": "cannot contain numbers"
+  "matches": "cannot contain numbers",
+
+  "requiredTitleEn": "Title in English is required",
+  "invalidTitleEn": "Title in English cannot contain numbers",
+  "requiredTitleKa": "Title in Georgian is required",
+  "invalidTitleKa": "Title in Georgian cannot contain numbers",
+  "requiredDescriptionEn": "Description in English is required",
+  "invalidDescriptionEn": "Description in English cannot contain numbers",
+  "requiredDescriptionKa": "Description in Georgian is required",
+  "invalidDescriptionKa": "Description in Georgian cannot contain numbers",
+  "requiredImage": "Image is required"
 }

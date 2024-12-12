@@ -10,8 +10,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ImageUpload } from "./ImageUpload";
 import { useRef } from "react";
-import { schemaBlogs } from "../validation";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { schemaBlogs } from "../validation";
 export const CreateBlogsForm = () => {
   const { control, handleSubmit, reset, formState } =
     useForm<CreateBlogFormData>({
@@ -119,7 +119,7 @@ export const CreateBlogsForm = () => {
             <BlogsInput name="title_ka" control={control} />
             {formState.errors.title_ka && (
               <p className="text-red-500">
-                {formState.errors.title_ka.message}
+                {t(formState.errors.title_ka.message || "")}
               </p>
             )}
 
@@ -127,7 +127,7 @@ export const CreateBlogsForm = () => {
             <BlogsInput name="description_ka" control={control} />
             {formState.errors.description_ka && (
               <p className="text-red-500">
-                {formState.errors.description_ka.message}
+                {t(formState.errors.description_ka.message || "")}
               </p>
             )}
           </ContentBox>
@@ -137,7 +137,7 @@ export const CreateBlogsForm = () => {
             <BlogsInput name="title_en" control={control} />
             {formState.errors.title_en && (
               <p className="text-red-500">
-                {formState.errors.title_en.message}
+                {t(formState.errors.title_en.message || "")}
               </p>
             )}
 
@@ -145,16 +145,16 @@ export const CreateBlogsForm = () => {
             <BlogsInput name="description_en" control={control} />
             {formState.errors.description_ka && (
               <p className="text-red-500">
-                {formState.errors.description_ka.message}
+                {t(formState.errors.description_ka.message || "")}
               </p>
             )}
           </ContentBox>
         </div>
         <div>
           <ImageUpload fileInputRef={fileInputRef} control={control} />
-          {formState.errors.title_ka && (
+          {formState.errors.image_url && (
             <p className="text-red-500">
-              {formState.errors?.image_url?.message}
+              {t(formState.errors.image_url.message || "")}
             </p>
           )}
         </div>
