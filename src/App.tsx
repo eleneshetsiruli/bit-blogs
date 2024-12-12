@@ -63,7 +63,7 @@ function App() {
             }
           />
           <Route
-            path="about"
+            path="profile-info"
             element={
               <Suspense fallback={<LoadingPage />}>
                 <LazyProfileInfo />
