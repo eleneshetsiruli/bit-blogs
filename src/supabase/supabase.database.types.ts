@@ -187,6 +187,7 @@ export type Database = {
           description_en: string;
           image_url: string;
           user_id: string;
+          created_at: string;
         };
         Insert: {
           title_en: string;

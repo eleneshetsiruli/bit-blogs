@@ -28,6 +28,7 @@ export const CardsSection = () => {
           lang === "ka" ? el.description_ka : el.description_en;
         return (
           <SingleCard
+            created={el.created_at}
             key={i}
             imageUrl={el.image_url}
             text={title}

@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CardsSection } from "../home/main/CardsSection";
+import { CardsSection } from "../home/main/blogsCardsSection";
 import { Aboutauthor } from "./Aboutauthor";
 
 export const Tab = () => {

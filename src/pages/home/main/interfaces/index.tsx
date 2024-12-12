@@ -25,4 +25,5 @@ export interface SingleCardProps {
   text: string;
   description: string;
   imageUrl: string;
+  created: string;
 }

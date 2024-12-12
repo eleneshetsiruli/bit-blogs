@@ -1,4 +1,4 @@
-import { CardsSection } from "./CardsSection";
+import { CardsSection } from "./blogsCardsSection";
 import { RightSideBar } from "./RightSideBar";
 
 export const Main = () => {

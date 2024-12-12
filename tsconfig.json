@@ -1,17 +1,32 @@
+// {
+//   "files": [],
+//   "references": [
+//     { "path": "./tsconfig.app.json" },
+//     { "path": "./tsconfig.node.json" }
+//   ],
+//   "compilerOptions": {
+//     "noImplicitAny": true,
+//     "resolveJsonModule": true,
+//     "esModuleInterop": true,
+//     "baseUrl": ".",
+//     "paths": {
+//       "@/*": ["./src/*"],
+//       "#/*": ["./src/components/*"]
+//     }
+//   }
+// }
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
   "compilerOptions": {
-    "noImplicitAny": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "#/*": ["./src/components/*"]
     }
-  }
+  },
+
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }

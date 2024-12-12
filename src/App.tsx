@@ -5,16 +5,18 @@ import { LayOut } from "./layOut";
 import { HomeLayout } from "./pages/home";
 import { SignIn } from "./pages/signIn/SignIn";
 import { SignUp } from "./pages/signUp";
-import { About } from "./pages/about/inedex";
 import { IndividualAuthor } from "./pages/individualAuthor";
 import { useAuthContext } from "./hooks/useContext";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { supabase } from "./supabase";
 import { AuthGuard } from "./route-guards/auth";
-import { Profile } from "./pages/profile";
-import { ProfileInfo } from "./pages/profile-info";
 import { CreateBlogs } from "./pages/createBlogs";
 import { ToastContainerWrapper } from "./toast";
+import { LoadingPage } from "./pages/loadingPage";
+
+const LazyAboutView = lazy(() => import("./pages/about/index"));
+const LazyProfileView = lazy(() => import("./pages/profile/index"));
+const LazyProfileInfo = lazy(() => import("./pages/profile-info/index"));
 
 function App() {
   const { handleSetUser } = useAuthContext();
@@ -34,7 +36,15 @@ function App() {
       <Routes>
         <Route path="/:lang" element={<LayOut />}>
           <Route path="home" element={<HomeLayout />} />
-          <Route path="about" element={<About />} />
+
+          <Route
+            path="about"
+            element={
+              <Suspense fallback={<LoadingPage />}>
+                <LazyAboutView />
+              </Suspense>
+            }
+          />
 
           <Route
             path="sign-in"
@@ -52,10 +62,25 @@ function App() {
               </AuthGuard>
             }
           />
+          <Route
+            path="about"
+            element={
+              <Suspense fallback={<LoadingPage />}>
+                <LazyProfileInfo />
+              </Suspense>
+            }
+          />
 
           <Route path="createBlogs" element={<CreateBlogs />} />
-          <Route path="profile-info" element={<ProfileInfo />} />
-          <Route path="profile" element={<Profile />} />
+
+          <Route
+            path="profile"
+            element={
+              <Suspense fallback={<LoadingPage />}>
+                <LazyProfileView />
+              </Suspense>
+            }
+          />
           <Route path="ind-author" element={<IndividualAuthor />} />
         </Route>
         <Route path="/" element={<Navigate to="/en/home" />} />

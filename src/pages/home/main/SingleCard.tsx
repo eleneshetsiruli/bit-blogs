@@ -5,6 +5,7 @@ export const SingleCard: React.FC<SingleCardProps> = ({
   text,
   description,
   imageUrl,
+  created,
 }) => {
   const truncatedDescription =
     description.length > 200
@@ -21,6 +22,7 @@ export const SingleCard: React.FC<SingleCardProps> = ({
         src={imageUrl}
         alt="image"
       />
+      <p>{created}</p>
     </Card>
   );
 };

@@ -17,7 +17,7 @@ import { FillProfileInfo } from "@/supabase/account";
 import { useAuthContext } from "@/hooks/useContext";
 import { useForm } from "react-hook-form";
 
-export const Profile = () => {
+const Profile = () => {
   const { t } = useTranslation();
   const { user } = useAuthContext();
   const navigate = useNavigate();
@@ -219,3 +219,4 @@ export const Profile = () => {
     </form>
   );
 };
+export default Profile;

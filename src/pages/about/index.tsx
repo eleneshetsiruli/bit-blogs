@@ -4,7 +4,7 @@ import { AboutCard } from "./AboutCard";
 import { boltSvg, bookSvg, groupSvg } from "./svg";
 import { Button } from "@/components/ui/button";
 
-export const About = () => {
+const About = () => {
   return (
     <div className="m-[50px] flex flex-col gap-[60px] self-center pt-10">
       <div className="flex flex-col gap-5 text-center">
@@ -65,3 +65,4 @@ Today, bitBlogs is proud to be a leading platform for technology-focused content
     </div>
   );
 };
+export default About;

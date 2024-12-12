@@ -19,7 +19,7 @@ type Profile = {
   telephone?: string | null;
 };
 
-export const ProfileInfo = () => {
+const ProfileInfo = () => {
   const [profileData, setProfileData] = useState<Profile[]>([]);
 
   const { user } = useAuthContext();
@@ -77,3 +77,4 @@ export const ProfileCard: React.FC<{ data: Profile }> = ({ data }) => {
     </div>
   );
 };
+export default ProfileInfo;
