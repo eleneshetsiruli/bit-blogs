@@ -23,7 +23,7 @@ export const CardsSection = () => {
   }
 
   return (
-    <div className="mt-[50px] flex flex-col">
+    <div className="mt-[50px] flex flex-col gap-10">
       {blogs?.map((el, i) => {
         const title = lang === "ka" ? el.title_ka : el.title_en;
         const description =
