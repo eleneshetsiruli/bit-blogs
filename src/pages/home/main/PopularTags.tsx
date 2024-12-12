@@ -9,7 +9,7 @@ export const PopularTags = () => {
   const { lang } = useParams<{ lang: string }>();
   const language = lang === "en" || lang === "ka" ? lang : "en";
   return (
-    <div className="shadow-custom flex w-[450px] flex-col rounded-[10px] border-2 border-chart-1 p-[10px]">
+    <div className="shadow-custom flex flex-col rounded-[10px] border-2 border-chart-1 p-[10px] text-center lg:w-[450px]">
       <Title title={t("home-page.PopularTags")} />
       <div className="flex flex-wrap gap-2 border-chart-1 p-[30px]">
         {techButtons.map((el, i) => (

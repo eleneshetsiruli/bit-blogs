@@ -8,7 +8,7 @@ export const AuthorsContainer = () => {
   const { lang } = useParams();
 
   return (
-    <div className="shadow-custom flex h-[300px] w-[450px] flex-col gap-8 rounded-[10px] border-2 border-chart-1 p-[10px]">
+    <div className="shadow-custom flex h-[300px] flex-col gap-8 rounded-[10px] border-2 border-chart-1 p-[10px] lg:w-[450px]">
       <Title title={t("home-page.FeauteredAuthors")} />
       <div className="flex flex-col justify-center gap-[20px]">
         {Authors.map((el, i) => (

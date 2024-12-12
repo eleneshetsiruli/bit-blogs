@@ -6,8 +6,6 @@ import { useParams } from "react-router-dom";
 
 export const CardsSection = () => {
   const { lang } = useParams();
-
-  console.log(lang);
   const {
     data: blogs,
     isLoading,
