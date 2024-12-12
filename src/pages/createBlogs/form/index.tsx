@@ -12,8 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const CreateBlogsForm = () => {
-  const { control, handleSubmit, reset, formState } =
-    useForm<CreateBlogFormData>();
+  const { control, handleSubmit, reset } = useForm<CreateBlogFormData>();
   const { t } = useTranslation();
   const { user } = useAuthContext();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -97,36 +96,21 @@ export const CreateBlogsForm = () => {
             <ContentBox>
               <p>{t("createBlog-page.titleKa")}</p>
               <BlogsInput name="title_ka" control={control} />
-              {formState.errors.title_ka && (
-                <p className="text-red-500">Field is required</p>
-              )}
 
               <p>{t("createBlog-page.descriptionKa")}</p>
               <BlogsInput name="description_ka" control={control} />
-              {formState.errors.description_ka && (
-                <p className="text-red-500">Field is required</p>
-              )}
             </ContentBox>
 
             <ContentBox>
               <p>{t("createBlog-page.title")}</p>
               <BlogsInput name="title_en" control={control} />
-              {formState.errors.title_en && (
-                <p className="text-red-500">Field is required</p>
-              )}
 
               <p>{t("createBlog-page.description")}</p>
               <BlogsInput name="description_en" control={control} />
-              {formState.errors.description_en && (
-                <p className="text-red-500">Field is required</p>
-              )}
             </ContentBox>
           </div>
           <div>
             <ImageUpload fileInputRef={fileInputRef} control={control} />
-            {formState.errors.image_url && (
-              <p className="text-red-500">Field is required</p>
-            )}
           </div>
           <Button>{t("createBlog-page.create")}</Button>
         </div>
