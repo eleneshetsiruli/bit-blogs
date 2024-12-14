@@ -21,7 +21,6 @@ export const CardsSection = () => {
     };
     getBlogs();
   }, []);
-
   return (
     <div className="mt-[50px] flex flex-col gap-10">
       <SearchComponent />

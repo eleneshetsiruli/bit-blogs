@@ -12,7 +12,6 @@ export const SingleCard: React.FC<SingleCardProps> = ({
     description.length > 200
       ? description.substring(0, 200) + "..."
       : description;
-
   const now = dayjs();
   const createdDate = dayjs(created);
   const isSameDay = now.isSame(createdDate, "day");

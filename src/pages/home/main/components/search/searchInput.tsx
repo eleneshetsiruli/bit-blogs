@@ -4,10 +4,12 @@ import { supabase } from "@/supabase";
 import { useSetAtom } from "jotai";
 import { Controller, useForm } from "react-hook-form";
 import { SearchValuesType } from "./interfaces";
+import { useSearchParams } from "react-router-dom";
 
 export const SearchInput = () => {
   const { control, setValue } = useForm<SearchValuesType>();
   const setBlogs = useSetAtom(setBlogsAtom);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const fetchBlogs = async (searchValue: string) => {
     try {
@@ -19,7 +21,14 @@ export const SearchInput = () => {
       if (error) throw error;
 
       setBlogs(data || []);
-      console.log("Blogs data updated:", data);
+
+      const updatedSearchParams = new URLSearchParams(searchParams);
+      if (searchValue) {
+        updatedSearchParams.set("search", searchValue);
+      } else {
+        updatedSearchParams.delete("search");
+      }
+      setSearchParams(updatedSearchParams);
     } catch (error) {
       console.error("Error fetching blogs:", error);
     }
@@ -29,18 +38,14 @@ export const SearchInput = () => {
     const searchValue = e.target.value;
     setValue("search", searchValue);
 
-    if (searchValue === "") {
-      fetchBlogs("");
-    } else {
-      fetchBlogs(searchValue);
-    }
+    fetchBlogs(searchValue);
   };
 
   return (
     <form>
       <Controller
         control={control}
-        defaultValue=""
+        defaultValue={searchParams.get("search") || ""}
         name="search"
         render={({ field: { value } }) => (
           <Input
