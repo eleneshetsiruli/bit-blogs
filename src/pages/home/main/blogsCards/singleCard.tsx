@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
-import { SingleCardProps } from "../interfaces";
 import dayjs from "dayjs";
 import { Paragraph } from "@/components/cva/paragraph";
+import { SingleCardProps } from "./interfaces";
 export const SingleCard: React.FC<SingleCardProps> = ({
   text,
   description,
@@ -17,11 +17,13 @@ export const SingleCard: React.FC<SingleCardProps> = ({
   const createdDate = dayjs(created);
   const isSameDay = now.isSame(createdDate, "day");
   let formattedDate;
+
   if (isSameDay) {
     formattedDate = createdDate.from(now);
   } else {
     formattedDate = createdDate.format("HH:mm - DD/MM/YYYY");
   }
+
   return (
     <Card className="flex flex-col-reverse items-center border-chart-1 bg-background p-10 lg:h-80 lg:w-[750px] lg:justify-between">
       <div className="flex w-[100%] gap-3 lg:w-[400px]">

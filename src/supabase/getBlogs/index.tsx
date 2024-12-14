@@ -5,7 +5,6 @@ export const fetchBlogs = async () => {
     .from("blogs")
     .select("*")
     .order("created_at", { ascending: false });
-  console.log(data);
 
   if (error) {
     throw new Error(error.message);
