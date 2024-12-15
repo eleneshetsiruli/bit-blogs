@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import { Paragraph } from "@/components/cva/paragraph";
 import { SingleCardProps } from "./interfaces";
 import React from "react";
-import { useTranslation } from "react-i18next";
 export const SingleCard = React.memo(
   ({ text, description, imageUrl, created }: SingleCardProps) => {
     const truncatedDescription =
@@ -14,7 +13,7 @@ export const SingleCard = React.memo(
     const now = dayjs();
     const createdDate = dayjs(created);
     const isSameDay = now.isSame(createdDate, "day");
-    const { t } = useTranslation();
+
     let formattedDate;
 
     if (isSameDay) {
@@ -39,8 +38,7 @@ export const SingleCard = React.memo(
           />
         </div>
         <Paragraph className="self-end">
-          <span className="text-gray-500">{t("createBlog-page.create")}</span>{" "}
-          {formattedDate}
+          <span className="text-gray-500">nnn</span> {formattedDate}
         </Paragraph>
       </Card>
     );
