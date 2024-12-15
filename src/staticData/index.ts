@@ -1,4 +1,4 @@
-import { Card } from "@/pages/home/main/interfaces";
+import { Card } from "@/pages/home/main/blogsCards/interfaces";
 
 export const cardsStaticData: Card[] = [
   {

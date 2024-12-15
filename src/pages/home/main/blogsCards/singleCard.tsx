@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { Paragraph } from "@/components/cva/paragraph";
 import { SingleCardProps } from "./interfaces";
 import React from "react";
+
 export const SingleCard = React.memo(
   ({ text, description, imageUrl, created }: SingleCardProps) => {
     const truncatedDescription =
@@ -38,7 +39,7 @@ export const SingleCard = React.memo(
           />
         </div>
         <Paragraph className="self-end">
-          <span className="text-gray-500">nnn</span> {formattedDate}
+          <span className="text-gray-500">hh</span> {formattedDate}
         </Paragraph>
       </Card>
     );
