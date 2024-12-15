@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useDebounce } from "@uidotdev/usehooks";
 import qs from "qs";
+import { useTranslation } from "react-i18next";
 
 export const SearchInput = () => {
   const { control, setValue, watch } = useForm<SearchValuesType>();
@@ -15,14 +16,17 @@ export const SearchInput = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchValue = watch("search", searchParams.get("search") || "");
   const debouncedSearchValue = useDebounce(searchValue, 300);
-
+  const { t } = useTranslation();
   const fetchFilteredBlogs = async (searchValue: string) => {
     try {
       const { data, error } = await supabase
         .from("blogs")
         .select("*")
         .order("created_at", { ascending: false })
-        .ilike("title_en", `%${searchValue}%`);
+        .or(
+          `title_en.ilike.%${searchValue}%,title_ka.ilike.%${searchValue}%`, // Combine both fields
+        );
+      // .ilike("title_en", `%${searchValue}%`);
       if (error) throw error;
 
       setBlogs(data || []);
@@ -64,7 +68,7 @@ export const SearchInput = () => {
         render={({ field: { value } }) => (
           <Input
             className="italic"
-            placeholder="Search by title"
+            placeholder={t("createBlog-page.search")}
             onChange={onSearchChange}
             value={value}
           />

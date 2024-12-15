@@ -7,5 +7,6 @@
   "image": "Upload Image",
   "required": "required",
   "matches": "cannot contain numbers",
-  "created": "created at"
+  "created": "created at",
+  "search": "Search by title"
 }
