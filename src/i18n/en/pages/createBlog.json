@@ -6,5 +6,6 @@
   "create": "Create",
   "image": "Upload Image",
   "required": "required",
-  "matches": "cannot contain numbers"
+  "matches": "cannot contain numbers",
+  "created": "created"
 }
