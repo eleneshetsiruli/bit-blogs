@@ -3,15 +3,20 @@ import { setBlogsAtom } from "@/context/auth/jotai/searchContext.ts/setBlogsAtom
 import { supabase } from "@/supabase";
 import { useSetAtom } from "jotai";
 import { Controller, useForm } from "react-hook-form";
-import { SearchValuesType } from "./interfaces";
+import { SearchValuesType } from "../interfaces";
 import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useDebounce } from "@uidotdev/usehooks";
+import qs from "qs";
 
 export const SearchInput = () => {
-  const { control, setValue } = useForm<SearchValuesType>();
+  const { control, setValue, watch } = useForm<SearchValuesType>();
   const setBlogs = useSetAtom(setBlogsAtom);
   const [searchParams, setSearchParams] = useSearchParams();
+  const searchValue = watch("search", searchParams.get("search") || "");
+  const debouncedSearchValue = useDebounce(searchValue, 300);
 
-  const fetchBlogs = async (searchValue: string) => {
+  const fetchFilteredBlogs = async (searchValue: string) => {
     try {
       const { data, error } = await supabase
         .from("blogs")
@@ -22,13 +27,11 @@ export const SearchInput = () => {
 
       setBlogs(data || []);
 
-      const updatedSearchParams = new URLSearchParams(searchParams);
-      if (searchValue) {
-        updatedSearchParams.set("search", searchValue);
-      } else {
-        updatedSearchParams.delete("search");
-      }
-      setSearchParams(updatedSearchParams);
+      const queryString = qs.stringify(
+        { search: searchValue || "" },
+        { skipNulls: true },
+      );
+      setSearchParams(queryString);
     } catch (error) {
       console.error("Error fetching blogs:", error);
     }
@@ -37,9 +40,20 @@ export const SearchInput = () => {
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value;
     setValue("search", searchValue);
-
-    fetchBlogs(searchValue);
+    fetchFilteredBlogs(searchValue);
   };
+
+  useEffect(() => {
+    fetchFilteredBlogs(debouncedSearchValue);
+  }, [debouncedSearchValue]);
+
+  useEffect(() => {
+    const parsedParams = qs.parse(searchParams.toString());
+    const searchValue =
+      typeof parsedParams.search === "string" ? parsedParams.search : "";
+    setValue("search", searchValue);
+    fetchFilteredBlogs(searchValue);
+  }, []);
 
   return (
     <form>

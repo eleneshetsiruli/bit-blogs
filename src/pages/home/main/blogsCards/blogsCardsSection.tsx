@@ -3,13 +3,14 @@ import { fetchBlogs } from "@/supabase/getBlogs";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { SingleCard } from "./singleCard";
+import React from "react";
 
-export const CardsSection = () => {
+const CardsSectionComponent = () => {
   const { lang } = useParams();
 
   const { data: blogs, isError } = useQuery({
     queryKey: ["blogs"],
-    queryFn: fetchBlogs,
+    queryFn: () => fetchBlogs(() => {}),
   });
 
   if (isError) {
@@ -19,14 +20,14 @@ export const CardsSection = () => {
 
   return (
     <div className="mt-[50px] flex flex-col gap-10">
-      {blogs?.map((el, i) => {
+      {blogs?.map((el) => {
         const title = lang === "ka" ? el.title_ka : el.title_en;
         const description =
           lang === "ka" ? el.description_ka : el.description_en;
         return (
           <SingleCard
             created={el.created_at}
-            key={i}
+            key={el.user_id}
             imageUrl={el.image_url}
             text={title}
             description={description}
@@ -36,3 +37,4 @@ export const CardsSection = () => {
     </div>
   );
 };
+export const CardsSection = React.memo(CardsSectionComponent);

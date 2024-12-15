@@ -1,9 +1,5 @@
-import { SearchInput } from "./searchInput";
+import { SearchInput } from "./search/searchInput";
 
 export const SearchComponent = () => {
-  return (
-    <div>
-      <SearchInput />
-    </div>
-  );
+  return <SearchInput />;
 };

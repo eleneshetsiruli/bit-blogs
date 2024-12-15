@@ -1,4 +1,4 @@
-import { Author } from "../../interfaces";
+import { Author } from "../../blogsCards/interfaces";
 
 export const AuthorList: React.FC<{ author: Author[] }> = ({ author }) => {
   return (
